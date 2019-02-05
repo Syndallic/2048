@@ -1,14 +1,16 @@
 import numpy as np
 
-import Constants
-from Constants import Direction
+import constants
+from constants import Direction
 
 
 class GameModel:
     def __init__(self):
         # np.random.seed(0)
 
-        self.grid = np.zeros((Constants.GRID_WIDTH, Constants.GRID_HEIGHT), dtype=int)
+        self.score = 0
+
+        self.grid = np.zeros((constants.GRID_WIDTH, constants.GRID_HEIGHT), dtype=int)
         self.add_random()
         self.add_random()
 
@@ -27,6 +29,12 @@ class GameModel:
         if self.process_lines(grid):
             self.add_random()
 
+    def game_over(self):
+        return not np.any(self.grid == 0)
+
+    def get_score(self):
+        return self.score
+
     def add_random(self):
         """Add a '2' to a random unoccupied space on the grid"""
         x, y = np.where(self.grid == 0)
@@ -34,11 +42,13 @@ class GameModel:
         random_pos = x[i], y[i]
         self.grid[random_pos] = 2
 
-    @staticmethod
-    def move_element(line, old_index, new_index):
+    def move_element(self, line, old_index, new_index):
         if old_index != new_index:
             line[new_index] += line[old_index]
             line[old_index] = 0
+
+            self.score += line[new_index]
+
             return True
         else:
             return False
@@ -51,13 +61,17 @@ class GameModel:
             current_index = 0
             for i in range(len(line)):
                 if i != current_index and line[i] != 0:
+                    # move if empty space at index 0 or we just merged
+                    # index not updated - this element could still be merged
                     if line[current_index] == 0:
                         changed = self.move_element(line, i, current_index) or changed
 
+                    # merge if values equal
                     elif line[current_index] == line[i]:
                         current_index += 1
                         changed = self.move_element(line, i, current_index - 1) or changed
 
+                    # add to next index if different values
                     elif line[current_index] != line[i]:
                         current_index += 1
                         changed = self.move_element(line, i, current_index) or changed
