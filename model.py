@@ -30,7 +30,22 @@ class GameModel:
             self.add_random()
 
     def game_over(self):
-        return not np.any(self.grid == 0)
+        if np.any(self.grid == 0):
+            return False
+
+        # horizontal pass
+        for line in self.grid:
+            for i in range(len(line) - 1):
+                if line[i] == line[i + 1]:
+                    return False
+
+        # vertical pass
+        for line in self.grid.T:
+            for i in range(len(line) - 1):
+                if line[i] == line[i + 1]:
+                    return False
+
+        return True
 
     def get_score(self):
         return self.score
