@@ -10,7 +10,7 @@ from model import GameModel
 
 
 class View:
-    def __init__(self, agent):
+    def __init__(self, agent=None):
         self.root = tk.Tk()
         self.model = GameModel()
         self.agent = agent
@@ -27,7 +27,8 @@ class View:
         self.root.bind('<Down>', self.down_key)
         self.root.bind('<Escape>', self.close)
 
-        self.agent_action()
+        if agent is not None:
+            self.agent_action()
 
         self.root.mainloop()
 
@@ -90,7 +91,7 @@ class View:
 
 
 def main():
-    View(RandomAgent())
+    View()
 
 
 if __name__ == "__main__":
