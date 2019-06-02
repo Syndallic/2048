@@ -5,7 +5,7 @@ GRID_HEIGHT = 4
 
 
 class Direction(Enum):
-    DOWN = auto()
-    UP = auto()
-    LEFT = auto()
-    RIGHT = auto()
+    DOWN = 0
+    UP = 1
+    LEFT = 2
+    RIGHT = 3

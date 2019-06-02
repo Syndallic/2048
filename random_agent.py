@@ -5,9 +5,9 @@ from constants import Direction
 
 class RandomAgent:
 
-    def get_action(self):
+    def get_action(self, state):
         directions = [d for d in Direction]
         return np.random.choice(directions)
 
-    def update_last_reward(self, reward):
+    def reward(self, reward):
         pass

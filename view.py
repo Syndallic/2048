@@ -5,6 +5,7 @@ import tkinter as tk
 
 import constants
 from constants import Direction
+from q_agent import QAgent
 from random_agent import RandomAgent
 from model import GameModel
 
@@ -12,7 +13,7 @@ from model import GameModel
 class View:
     def __init__(self, agent=None):
         self.root = tk.Tk()
-        self.model = GameModel()
+        self.model = GameModel(agent)
         self.agent = agent
 
         self.colours = ['salmon', 'light salmon', 'orange', 'dark orange', 'coral', 'light coral', 'tomato',
@@ -21,13 +22,13 @@ class View:
         self.label_grid = []
         self.init_grid()
 
-        self.root.bind('<Left>', self.left_key)
-        self.root.bind('<Right>', self.right_key)
-        self.root.bind('<Up>', self.up_key)
-        self.root.bind('<Down>', self.down_key)
-        self.root.bind('<Escape>', self.close)
-
-        if agent is not None:
+        if agent is None:
+            self.root.bind('<Left>', self.left_key)
+            self.root.bind('<Right>', self.right_key)
+            self.root.bind('<Up>', self.up_key)
+            self.root.bind('<Down>', self.down_key)
+            self.root.bind('<Escape>', self.close)
+        else:
             self.agent_action()
 
         self.root.mainloop()
@@ -78,20 +79,14 @@ class View:
 
     def agent_action(self):
         """Hook to allow agent to interact"""
-        direction = self.agent.get_action()
-        old_score = self.model.get_score()
-        self.model.process_input(direction)
-        score_difference = self.model.get_score() - old_score
-        self.agent.update_last_reward(score_difference)
-
+        self.model.agent_action()
         self.update_grid()
 
-        if not self.model.game_over():
-            self.root.after(1, self.agent_action)
+        self.root.after(1, self.agent_action)
 
 
 def main():
-    View()
+    View(QAgent())
 
 
 if __name__ == "__main__":
